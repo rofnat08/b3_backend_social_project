@@ -7,22 +7,23 @@ import UserRoutes from "./routes/users.js";
 import PublicationRoutes from "./routes/publications.js";
 import FollowRoutes from "./routes/follows.js";
 
-//Mensaje de bienvenida a la base de datos
-console.log("Api en ejecución");
 
-//Usar la conexión a la base de Datos
+// Mensaje de Bienvenida para verificare ejecutó la API de Node
+console.log("API Node en ejecución");
+
+// Usar la conexión a la Base de Datos
 connection();
 
-//Crear el servidor node
+// Crear el servidor Node
 const app = express();
 const puerto = process.env.PORT || 3900;
 
-//Configurar cors para que acepte peticiones del frontend (hacer peticiones al back desde el front)
+// Configurar cors para que acepte peticiones del frontend
 app.use(cors({
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    preflightContinue: false,
-    optionsSuccessStatus: 204
+  origin: '*',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
 
 // Decodificar los datos desde los formularios para convertirlos en objetos de JavaScript
@@ -34,9 +35,9 @@ app.use('/api/user', UserRoutes);
 app.use('/api/publication', PublicationRoutes);
 app.use('/api/follow', FollowRoutes);
 
-//Configurar el servidor en node
-app.listen(puerto, () => { //escucha al servidor y el puerto
-    console.log("Servidor de Node ejecutandose en el puerto", puerto);
+// Configurar el servidor de Node
+app.listen(puerto, () => {
+  console.log("Servidor de Node ejecutándose en el puerto", puerto);
 });
 
 export default app;
