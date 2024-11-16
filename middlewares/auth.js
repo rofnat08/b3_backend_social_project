@@ -1,6 +1,5 @@
 import jwt from 'jwt-simple';
 import moment from 'moment';
-import { secret } from '../services/jwt.js'; // Importar la clave secreta
 
 
 
