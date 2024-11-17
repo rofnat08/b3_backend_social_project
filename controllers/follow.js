@@ -102,7 +102,7 @@ export const saveFollow = async (req, res) => {
 // Método para eliminar un follow (dejar de seguir)
 export const unfollow = async (req, res) => {
   try {
-    // Obtener el Id del usuario indentificado
+    // Obtener el Id del usuario indentificado desde el token
     const userId = req.user.userId;
     // Obtener el Id del usuario que sigo y quiero dejar de seguir
     const followedId = req.params.id;

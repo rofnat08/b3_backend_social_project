@@ -1,5 +1,5 @@
 import Follow from "../models/follows.js";
-// Obtenemos un array de IDs de usuarios que yo sigo y que me siguen
+// Obtenemos dos arrays de IDs de usuarios que yo sigo (following) y que me siguen (followers)
 export const followUserIds = async (req, res) => {
   try {
     // Obtener el ID del usuario autenticado
