@@ -199,3 +199,91 @@ export const uploadMedia = async (req, res) => {
     });
   }
 };
+
+// Método para mostrar el archivo subido a la publicación
+export const showMedia = async (req, res) => {
+  try {
+    // Obtener el id de la publicación
+    const publicationId = req.params.id;
+    // Buscar la publicación en la base de datos
+    const publication = await Publication.findById(publicationId).select('file');
+    // Verificar si la publicación existe y tiene un archivo
+    if (!publication || !publication.file) {
+      return res.status(404).send({
+        status: "error",
+        message: "No existe el archivo para esta publicación"
+      });
+    }
+    // Redirigir a la URL de la imagen en Cloudinary
+    return res.redirect(publication.file);
+  } catch (error) {
+    console.error("Error al mostrar el archivo de la publicación", error);
+    return res.status(500).send({
+      status: "error",
+      message: "Error al mostrar archivo en la publicación"
+    });
+  }
+}
+// Método para listar todas las publicaciones de los usuarios que yo sigo (Feed)
+export const feed = async (req, res) => {
+  try {
+    // Asignar el número de página
+    let page = req.params.page ? parseInt(req.params.page, 10) : 1;
+    // Número de publicaciones que queremos mostrar por página
+    let itemsPerPage = req.query.limit ? parseInt(req.query.limit, 10) : 5;
+    // Verificar que el usuario autenticado existe y tiene un userId
+    if(!req.user || !req.user.userId) {
+      return res.status(404).send({
+        status: "error",
+        message: "Usuario no autenticado"
+      });
+    }
+    // Obtener un array de IDs de los usuarios que sigue el usuario autenticado
+    const myFollows = await followUserIds(req);
+    // Verificar que la lista de usuarios que sigo no esté vacía
+    if (!myFollows.following || myFollows.following.length === 0){
+      return res.status(404).send({
+        status: "error",
+        message: "No sigues a ningún usuario, no hay publicaciones que mostrar"
+      });
+    }
+    // Configurar las options de la consulta
+    const options = {
+      page: page,
+      limit: itemsPerPage,
+      sort: { created_at: -1 },
+      populate: {
+        path: 'user_id',
+        select: '-password -role -__v -email'
+      },
+      lean: true
+    };
+    // Consulta a la base de datos con paginate
+    const result = await Publication.paginate(
+      { user_id: { $in: myFollows.following }},
+      options
+    );
+    // Verificar si se encontraron publicaciones en la BD
+    if (!result.docs || result.docs.length <= 0) {
+      return res.status(404).send({
+        status: "error",
+        message: "No hay publicaciones para mostrar"
+      });
+    }
+    // Devolver respuesta exitosa
+    return res.status(200).json({
+      status: "success",
+      message: "Feed de Publicaciones",
+      publications: result.docs,
+      total: result.totalDocs,
+      pages: result.totalPages,
+      page: result.page,
+      limit: result.limit
+    });
+  } catch (error) {
+    return res.status(500).send({
+      status: "error",
+      message: "Error al mostrar las publicaciones en el feed"
+    });
+  }
+}

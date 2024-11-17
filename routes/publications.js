@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { testPublication, savePublication, showPublication, deletePublication, publicationsUser, uploadMedia } from "../controllers/publication.js";
+import { testPublication, savePublication, showPublication, deletePublication, publicationsUser, uploadMedia, showMedia, feed} from "../controllers/publication.js";
 import { ensureAuth } from '../middlewares/auth.js';
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
@@ -31,6 +31,8 @@ router.get('/show-publication/:id', ensureAuth, showPublication);
 router.delete('/delete-publication/:id', ensureAuth, deletePublication);
 router.get('/publications-user/:id/:page?', ensureAuth, publicationsUser);
 router.post('/upload-media/:id', [ensureAuth, uploads.single("file0")], uploadMedia);
+router.get('/media/:id', showMedia);
+router.get('/feed/:page?', ensureAuth, feed);
 
 //Exportar el Router
 export default router;
