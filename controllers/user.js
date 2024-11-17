@@ -338,11 +338,9 @@ export const avatar = async (req, res) => {
         message: "No existe usuario o imagen"
       });
     }
-    // Devolver la URL de la imagemn desde cloudinary
-    return res.status(200).send({
-      status: "success",
-      imageUrl: user.image // URL de Cloudinary
-    });
+    // Redirigir a la URL de la imagen en Cloudinary
+    return res.redirect(user.image);
+    
   } catch (error) {
   console.log("Error al mostrar el archivo del avatar", error);
   return res.status(500).send({
