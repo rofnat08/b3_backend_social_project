@@ -53,7 +53,7 @@ export const showPublication = async (req, res) => {
     // Obtener el ID de la publicación desde la url (parámetros)
     const publicationId = req.params.id;
     // Buscar la publicación en la BD por ID
-    const publicationStored = await Publication.findById(publicationId).populate('user_id', 'name last_name');
+    const publicationStored = await Publication.findById(publicationId).populate('user_id', 'name last_name nick image');
     // Verificar si existe la publicación en la BD
     if(!publicationStored){
       return res.status(404).send({
